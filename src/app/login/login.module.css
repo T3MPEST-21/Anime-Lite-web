@@ -1,0 +1,99 @@
+.container {
+  display: flex;
+  min-height: 100vh;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background-color: var(--background);
+}
+
+.card {
+  background-color: var(--surface);
+  padding: 40px;
+  border-radius: var(--radius-xl);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px; 
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 2rem;
+  text-align: center;
+  color: var(--primary);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.input {
+  width: 100%;
+  padding: 12px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--text-secondary); /* Simplified border */
+  background-color: var(--background);
+  color: var(--text);
+  font-size: 1rem;
+}
+
+.button {
+  background-color: var(--primary);
+  color: white;
+  padding: 12px;
+  border-radius: var(--radius-round);
+  border: none;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  margin-top: 1rem;
+}
+
+.button:hover {
+  opacity: 0.9;
+}
+
+.linkText {
+  text-align: center;
+  margin-top: 1rem;
+  color: var(--text-secondary);
+}
+
+.link {
+  color: var(--primary);
+  text-decoration: none;
+  padding-left: 10px;
+}
+
+.link:hover {
+  transform: translateY(-2px);
+}
+
+.showPasswordButton {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #000000;
+    display: flex;
+    align-items: center;
+}

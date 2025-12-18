@@ -1,0 +1,69 @@
+.card {
+  background-color: var(--surface);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: var(--background); /* Fallback color */
+  margin-right: 12px;
+  object-fit: cover;
+}
+
+.userInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.name {
+  font-weight: bold;
+  font-size: 1rem;
+  color: var(--text);
+}
+
+.username {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.body {
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--text);
+  margin-bottom: 16px;
+  white-space: pre-wrap; /* Keeps line breaks from the user */
+}
+
+.actions {
+  display: flex;
+  gap: 20px;
+  padding-top: 12px;
+  border-top: 1px solid var(--background);
+}
+
+.actionButton {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  transition: color 0.2s;
+}
+
+.actionButton:hover {
+  color: var(--primary);
+}

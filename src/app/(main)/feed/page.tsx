@@ -18,7 +18,11 @@ const FeedPage = () => {
     }, []);
 
     const loadFeed = async () => {
-        const res = await fetchPosts();
+        // first, get the current user
+        const { data: { user } } = await supabase.auth.getUser();
+
+        // second, get their id to fetchPosts
+        const res = await fetchPosts(user?.id);
         if (res.success) {
             setPosts(res.data || []);
         }

@@ -5,7 +5,7 @@ import { supabase } from "@/lib/supabase";
  * Fetch all posts with their creators' profiles, likes (count), and comments (count).
  * This joins the 'users' (or 'profiles') table.
  */
-export const fetchPosts = async () => {
+export const fetchPosts = async (currentUserId?: string) => {
     try {
         // 1. Fetch the raw posts first (no joins yet)
         const { data: posts, error } = await supabase
@@ -34,17 +34,37 @@ export const fetchPosts = async () => {
                 .select("id", { count: "exact", head: true })
                 .eq("post_id", post.id);
 
+            // Check if current user liked
+            let isLiked = false;
+            if (currentUserId) {
+                const { data: likeData } = await supabase
+                    .from("post_likes")
+                    .select("id")
+                    .eq("post_id", post.id)
+                    .eq("user_id", currentUserId) // check if THIS user liked it
+                    .single();
+                isLiked = !!likeData;
+            }
+
             // Fetch Comment Count
             const { count: commentCount } = await supabase
                 .from("post_comments")
                 .select("id", { count: "exact", head: true })
                 .eq("post_id", post.id);
 
+            // Fetch Images
+            const { data: postImages } = await supabase
+                .from("post_images")
+                .select("image_url")
+                .eq("post_id", post.id);
+
             return {
                 ...post,
                 user: user || { username: 'Unknown', image: null }, // Fallback
                 post_likes: [{ count: likeCount || 0 }],
-                post_comments: [{ count: commentCount || 0 }]
+                post_comments: [{ count: commentCount || 0 }],
+                post_images: postImages || [],
+                isLiked: isLiked
             };
         }));
 
@@ -96,3 +116,61 @@ export const addComment = async (
     }
     return { success: true, data };
 };
+
+// create a new post
+export const createPost = async (userId: string, body: string, imageFiles: File[]) => {
+    try {
+        // first, create the post entry
+        const { data: postData, error: postError } = await supabase
+            .from("posts")
+            .insert([{
+                body,
+                user_id: userId,
+            }])
+            .select() //return a new post
+            .single();
+
+        if (postError) {
+            console.error('error creating the post', postError);
+            return { success: false, msg: postError.message };
+        }
+
+        const postId = postData.id;
+        // second, if (image) {upload image}
+        if (imageFiles.length > 0) {
+            for (const file of imageFiles) {
+                // upload to storage
+                const fileExt = file.name.split('.').pop();
+                const fileName = `${Date.now()}_${Math.random()}.${fileExt}`;
+                const filePath = `posts/${userId}/${fileName}`;
+
+                const { error: uploadError } = await supabase.storage
+                    .from('uploads')
+                    .upload(filePath, file);
+
+                if (uploadError) {
+                    console.error('error uploading image', uploadError);
+                    continue;
+                }
+
+                // get public url
+                const { data: { publicUrl } } = supabase.storage
+                    .from('uploads')
+                    .getPublicUrl(filePath);
+
+                // link to post in database
+                await supabase
+                    .from('post_images')
+                    .insert({
+                        post_id: postId,
+                        image_url: publicUrl,
+                    });
+            }
+        }
+
+        return { success: true, data: postData };
+    } catch (error: any) {
+        console.error('exception creating post:', error)
+        return { success: false, msg: error.message };
+    }
+}

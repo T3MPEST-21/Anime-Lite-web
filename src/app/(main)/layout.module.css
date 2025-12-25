@@ -1,0 +1,95 @@
+.container {
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--background);
+}
+
+/* THE SIDEBAR - Glass & Floating */
+.sidebar {
+  width: 280px;
+  height: calc(100vh - 40px); /* Floating gap */
+  position: sticky;
+  top: 20px;
+  margin-left: 20px;
+  background: rgba(255, 255, 255, 0.05); /* Very subtle transparency */
+  backdrop-filter: blur(12px); /* The Glass Effect */
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  padding: 30px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.05);
+}
+
+/* Dark mode adjustment for glass */
+@media (prefers-color-scheme: dark) {
+  .sidebar {
+    background: rgba(30, 30, 30, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+}
+
+.logo {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--primary);
+  margin-bottom: 40px;
+  padding-left: 10px;
+  letter-spacing: -1px;
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.navItem {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  border-radius: 16px;
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+/* The Cool Hover Effect */
+.navItem:hover {
+  background: var(--surface);
+  color: var(--primary);
+  transform: translateX(5px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+/* Active State */
+.navItem.active {
+  background: var(--primary);
+  color: white;
+  box-shadow: 0 4px 15px rgba(var(--primary-rgb), 0.3); /* Need RGB var or use shadow */
+}
+
+.navText {
+  font-size: 1.1rem;
+}
+
+/* Main Content Area */
+.content {
+  flex: 1;
+  padding: 0 40px; /* Breathing room */
+}
+
+/* Mobile Responsiveness (Hides sidebar on small screens for now) */
+@media (max-width: 768px) {
+  .sidebar {
+    display: none;
+  }
+  .content {
+    padding: 0;
+  }
+}

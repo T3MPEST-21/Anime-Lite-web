@@ -48,7 +48,7 @@ export const fetchPosts = async (currentUserId?: string) => {
 
             // Fetch Comment Count
             const { count: commentCount } = await supabase
-                .from("post_comments")
+                .from("comments")
                 .select("id", { count: "exact", head: true })
                 .eq("post_id", post.id);
 
@@ -72,6 +72,83 @@ export const fetchPosts = async (currentUserId?: string) => {
     } catch (error) {
         console.error("Exception in fetchPosts:", error);
         return { success: false, msg: "Exception fetching posts" };
+    }
+};
+
+/**
+ * Fetch posts for a specific user
+ */
+export const fetchPostsByUser = async (userId: string, currentUserId?: string) => {
+    try {
+        // 1. Fetch raw posts for the user
+        const { data: posts, error } = await supabase
+            .from("posts")
+            .select(`*`)
+            .eq("user_id", userId)
+            .order("created_at", { ascending: false });
+
+        if (error) {
+            console.error("Error fetching user posts:", error);
+            return { success: false, msg: "Could not fetch posts" };
+        }
+
+        // 2. Enrich posts with profile, likes, comments (Reuse logic if possible, or duplicate for now)
+        // Since we already have the user profile (it's the same user), we can optimize this.
+        // But for consistency with PostCard, let's keep the structure identical.
+
+        const postsWithData = await Promise.all(posts.map(async (post) => {
+            // We know the user, but let's fetch strictly to match the shape or just use the known ID?
+            // Actually, for the Feed we fetch profiles. Here we can do the same to ensure valid data.
+            const { data: user } = await supabase
+                .from('profiles')
+                .select('username, image')
+                .eq('id', post.user_id)
+                .single();
+
+            // Fetch Like Count
+            const { count: likeCount } = await supabase
+                .from("post_likes")
+                .select("id", { count: "exact", head: true })
+                .eq("post_id", post.id);
+
+            // Check if current user liked
+            let isLiked = false;
+            if (currentUserId) {
+                const { data: likeData } = await supabase
+                    .from("post_likes")
+                    .select("id")
+                    .eq("post_id", post.id)
+                    .eq("user_id", currentUserId)
+                    .single();
+                isLiked = !!likeData;
+            }
+
+            // Fetch Comment Count
+            const { count: commentCount } = await supabase
+                .from("comments")
+                .select("id", { count: "exact", head: true })
+                .eq("post_id", post.id);
+
+            // Fetch Images
+            const { data: postImages } = await supabase
+                .from("post_images")
+                .select("image_url")
+                .eq("post_id", post.id);
+
+            return {
+                ...post,
+                user: user || { username: 'Unknown', image: null },
+                post_likes: [{ count: likeCount || 0 }],
+                post_comments: [{ count: commentCount || 0 }],
+                post_images: postImages || [],
+                isLiked: isLiked
+            };
+        }));
+
+        return { success: true, data: postsWithData };
+    } catch (error) {
+        console.error("Exception in fetchPostsByUser:", error);
+        return { success: false, msg: "Exception fetching user posts" };
     }
 };
 
@@ -108,13 +185,49 @@ export const addComment = async (
     comment: string
 ) => {
     const { data, error } = await supabase
-        .from("post_comments")
-        .insert([{ post_id: postId, user_id: userId, comment }]);
+        .from("comments")
+        .insert([{ post_id: postId, user_id: userId, content: comment }]);
     if (error) {
         console.error("Error adding comment:", error);
         return { success: false, error };
     }
     return { success: true, data };
+};
+
+// Fetch comments for a post
+export const fetchComments = async (postId: string, sortOrder: 'newest' | 'oldest' = 'newest') => {
+    try {
+        const { data, error } = await supabase
+            .from("comments")
+            .select(`
+                id,
+                content,
+                created_at,
+                user_id,
+                profiles!user_id (
+                    username,
+                    image
+                )
+            `)
+            .eq("post_id", postId)
+            .order("created_at", { ascending: sortOrder === 'oldest' });
+
+        if (error) {
+            console.error("Error fetching comments:", error);
+            return { success: false, error };
+        }
+
+        // Flatten the profiles array if necessary
+        const formattedData = data.map((item: any) => ({
+            ...item,
+            profiles: Array.isArray(item.profiles) ? item.profiles[0] : item.profiles
+        }));
+
+        return { success: true, data: formattedData };
+    } catch (e) {
+        console.error("Exception in fetchComments:", e);
+        return { success: false, error: e };
+    }
 };
 
 // create a new post

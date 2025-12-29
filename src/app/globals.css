@@ -1,14 +1,14 @@
-:root {
+  :root {
   /* Light Theme (matches lightTheme in themeContext.tsx) */
   --background: #f1f0ee;
   --surface: #ffffff;
   --text: #1d1d1d;
   --text-secondary: #475b6f;
-  
+
   --primary: #ff7f50;
   --secondary: #e74c3c;
   --accent: #e9967a;
-  
+
   /* Radiuses (matches radius in theme.ts) */
   --radius-sm: 12px;
   --radius-md: 14px;
@@ -25,7 +25,7 @@
     --surface: #090808;
     --text: #ffffff;
     --text-secondary: #e3e3e3;
-    
+
     /* Primary usually stays same, but surface changes */
     --primary: #ff7f50;
   }
@@ -37,6 +37,12 @@ body {
   font-family: Arial, Helvetica, sans-serif;
   margin: 0;
   padding: 0;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
 a {

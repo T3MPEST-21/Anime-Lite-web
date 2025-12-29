@@ -33,7 +33,6 @@ const FeedPage = () => {
 
     return (
         <div className={styles.container}>
-            <h1 className={styles.header}>Feed</h1>
             {posts.length === 0 ? (
                 <div className={styles.emptyState}>
                     No posts found.

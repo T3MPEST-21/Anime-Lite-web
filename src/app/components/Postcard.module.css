@@ -6,6 +6,14 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
+@media (max-width: 768px) {
+  .card {
+    border-radius: 0;
+    margin-bottom: 8px;
+    border-bottom: 8px solid var(--background);
+  }
+}
+
 .header {
   display: flex;
   align-items: center;
@@ -66,8 +74,8 @@
 
 .actions {
   display: flex;
-  gap: 20px;
-  padding-top: 12px;
+  justify-content: space-between;
+  padding: 12px 5px 0 5px;
   border-top: 1px solid var(--background);
 }
 

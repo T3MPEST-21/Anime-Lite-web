@@ -2,94 +2,102 @@
   display: flex;
   min-height: 100vh;
   background-color: var(--background);
+  max-width: 1920px;
+  margin: 0 auto;
+  gap: 20px;
+  padding: 0 20px;
 }
 
-/* THE SIDEBAR - Glass & Floating */
+/* THE SIDEBAR - Cleaner Facebook Style */
 .sidebar {
   width: 280px;
-  height: calc(100vh - 40px); /* Floating gap */
+  height: 100vh;
   position: sticky;
-  top: 20px;
-  margin-left: 20px;
-  background: rgba(255, 255, 255, 0.05); /* Very subtle transparency */
-  backdrop-filter: blur(12px); /* The Glass Effect */
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 24px;
-  padding: 30px 20px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.05);
-}
-
-/* Dark mode adjustment for glass */
-@media (prefers-color-scheme: dark) {
-  .sidebar {
-    background: rgba(30, 30, 30, 0.6);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-  }
+  top: 0;
+  padding: 8px 0;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  flex-shrink: 0;
 }
 
 .logo {
-  font-size: 1.8rem;
-  font-weight: 800;
+  font-size: 1.5rem;
+  font-weight: 700;
   color: var(--primary);
-  margin-bottom: 40px;
-  padding-left: 10px;
-  letter-spacing: -1px;
+  margin-bottom: 20px;
+  padding: 12px 16px;
 }
 
 .nav {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 2px;
 }
 
 .navItem {
   display: flex;
   align-items: center;
-  gap: 16px;
-  padding: 16px;
-  border-radius: 16px;
-  color: var(--text-secondary);
+  gap: 12px;
+  padding: 12px 16px;
+  color: var(--text);
   text-decoration: none;
-  font-weight: 600;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
-  overflow: hidden;
+  font-weight: 500;
+  transition: background 0.2s;
+  border-radius: 8px;
+  margin: 0 8px;
 }
 
-/* The Cool Hover Effect */
 .navItem:hover {
-  background: var(--surface);
-  color: var(--primary);
-  transform: translateX(5px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  background: var(--background);
 }
 
-/* Active State */
+/* Active State - Facebook style */
 .navItem.active {
-  background: var(--primary);
-  color: white;
-  box-shadow: 0 4px 15px rgba(var(--primary-rgb), 0.3); /* Need RGB var or use shadow */
+  background: none;
+  color: var(--primary);
 }
 
 .navText {
-  font-size: 1.1rem;
+  font-size: 0.95rem;
 }
 
 /* Main Content Area */
 .content {
   flex: 1;
-  padding: 0 40px; /* Breathing room */
+  padding: 0;
+  max-width: 680px;
+  min-width: 0;
 }
 
-/* Mobile Responsiveness (Hides sidebar on small screens for now) */
+
+/* Mobile Responsiveness */
+.mobileNav {
+  display: none;
+}
+
+@media (max-width: 1200px) {
+  .content {
+    max-width: none;
+  }
+}
+
 @media (max-width: 768px) {
   .sidebar {
     display: none;
   }
+
+  .container {
+    padding: 0;
+    gap: 0;
+  }
+
   .content {
     padding: 0;
+    margin-bottom: 70px;
+    max-width: 100%;
+  }
+
+  .mobileNav {
+    display: block;
   }
 }

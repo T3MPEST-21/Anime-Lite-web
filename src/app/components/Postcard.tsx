@@ -8,12 +8,17 @@ import ImageGallery from "./ImageGallery";
 import { likePost, unlikePost } from "@/services/postsService";
 import { supabase } from "@/lib/supabase"; // To get current user
 
+import CommentsModal from "./CommentsModal"; // Import Modal
+import ProfileModal from "./ProfileModal"; // Import Profile Modal
+
 interface PostProps {
   post: {
     id: string;
+    user_id: string; // Ensure this is typed
     body: string;
     created_at: string;
     user: {
+      id?: string; // Add optional ID since it might be needed for profile fetch
       username: string;
       image: string | null;
       full_name?: string;
@@ -27,11 +32,14 @@ interface PostProps {
 
 const PostCard = ({ post }: PostProps) => {
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
+  const [isCommentsOpen, setIsCommentsOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false); // Profile Modal State
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   // LOCAL STATE for Likes (This makes it feel instant!)
   const [liked, setLiked] = useState(post.isLiked || false);
   const [likeCount, setLikeCount] = useState(post.post_likes?.[0]?.count || 0);
+  const [commentCount, setCommentCount] = useState(post.post_comments?.[0]?.count || 0);
 
   // REALTIME SUBSCRIPTION
   useEffect(() => {
@@ -96,6 +104,30 @@ const PostCard = ({ post }: PostProps) => {
     };
   }, [post.id]);
 
+  // REALTIME SUBSCRIPTION FOR COMMENTS
+  useEffect(() => {
+    const channel = supabase
+      .channel(`realtime:comments:${post.id}`)
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'comments',
+          filter: `post_id=eq.${post.id}`,
+        },
+        () => {
+          // Increment count when new comment is added
+          setCommentCount((prev) => prev + 1);
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [post.id]);
+
   // Avatar fallback
   const avatarUrl = post.user?.image
     ? post.user.image
@@ -134,20 +166,24 @@ const PostCard = ({ post }: PostProps) => {
     <div className={styles.card}>
       {/* Header */}
       <div className={styles.header}>
-        <div style={{ position: 'relative', width: '40px', height: '40px', marginRight: '12px' }}>
-          <Image
-            src={avatarUrl}
-            alt="Avatar"
-            fill
-            className={styles.avatar}
-            style={{ objectFit: 'cover', borderRadius: '50%' }}
-            sizes="40px"
-            unoptimized
-          />
-        </div>
-        <div className={styles.userInfo}>
-          <span className={styles.name}>{post.user?.username || 'Unknown User'}</span>
-          {/* <span className={styles.username}>@{post.user?.username || 'user'}</span> */}
+        <div
+          style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', flex: 1 }}
+          onClick={() => setIsProfileOpen(true)}
+        >
+          <div style={{ position: 'relative', width: '40px', height: '40px', marginRight: '12px' }}>
+            <Image
+              src={avatarUrl}
+              alt="Avatar"
+              fill
+              className={styles.avatar}
+              style={{ objectFit: 'cover', borderRadius: '50%' }}
+              sizes="40px"
+              unoptimized
+            />
+          </div>
+          <div className={styles.userInfo}>
+            <span className={styles.name}>{post.user?.username || 'Unknown User'}</span>
+          </div>
         </div>
         <button className={styles.actionButton} style={{ marginLeft: 'auto' }}>
           <MoreHorizontal size={20} />
@@ -170,9 +206,9 @@ const PostCard = ({ post }: PostProps) => {
           <span>{likeCount}</span>
         </button>
 
-        <button className={styles.actionButton}>
+        <button className={styles.actionButton} onClick={() => setIsCommentsOpen(true)}>
           <MessageCircle size={20} />
-          <span>{post.post_comments?.[0]?.count || 0}</span>
+          <span>{commentCount}</span>
         </button>
 
         <button className={styles.actionButton}>
@@ -183,12 +219,27 @@ const PostCard = ({ post }: PostProps) => {
       {/* Gallery */}
       <ImageGallery
         isOpen={isGalleryOpen}
-        images={imageUrls}
+        images={post.post_images || []}
         initialIndex={currentImageIndex}
         onClose={() => setIsGalleryOpen(false)}
       />
+
+
+      {/* Comments Modal */}
+      <CommentsModal
+        isOpen={isCommentsOpen}
+        onClose={() => setIsCommentsOpen(false)}
+        post={post}
+      />
+
+      {/* Profile Modal */}
+      <ProfileModal
+        isOpen={isProfileOpen}
+        onClose={() => setIsProfileOpen(false)}
+        userId={post.user_id || (post as any).user_id} // Fallback if type isn't perfect yet
+      />
     </div>
-  )
-}
+  );
+};
 
 export default PostCard;

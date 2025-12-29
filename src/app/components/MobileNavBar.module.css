@@ -1,0 +1,43 @@
+.container {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 60px;
+    background: rgba(20, 20, 20, 0.9);
+    /* Glass effect dark base */
+    backdrop-filter: blur(12px);
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    z-index: 100;
+    padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* Light mode adjustment if needed, assuming dark default based on user */
+@media (prefers-color-scheme: light) {
+    .container {
+        background: rgba(255, 255, 255, 0.9);
+    }
+}
+
+.navItem {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary);
+    padding: 5px;
+    border-radius: 12px;
+    transition: all 0.2s;
+}
+
+.navItem.active {
+    color: var(--primary);
+    transform: translateY(-2px);
+}
+
+.icon {
+    margin-bottom: 2px;
+}

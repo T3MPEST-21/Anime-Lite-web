@@ -1,0 +1,172 @@
+/* Copying styles from CommentsModal + ProfilePage mix */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    /* Bottom sheet on mobile, center on desktop? logic below */
+}
+
+.modal {
+    width: 100%;
+    max-width: 600px;
+    height: 90vh;
+    /* Drawer style */
+    background: var(--background, #fff);
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    animation: slideUp 0.3s ease-out;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(100%);
+    }
+
+    to {
+        transform: translateY(0);
+    }
+}
+
+.closeBtn {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: rgba(0, 0, 0, 0.1);
+    border: none;
+    cursor: pointer;
+    color: var(--foreground);
+    border-radius: 50%;
+    padding: 8px;
+    z-index: 10;
+    backdrop-filter: blur(4px);
+}
+
+.closeBtn:hover {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.content {
+    flex: 1;
+    overflow-y: auto;
+    padding-bottom: 40px;
+}
+
+/* Profile Header Styles */
+.profileHeader {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 20px 20px;
+    background: var(--surface, #f9f9f9);
+    border-bottom: 1px solid var(--border);
+}
+
+.avatarWrapper {
+    width: 90px;
+    height: 90px;
+    position: relative;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid var(--primary, #0070f3);
+    margin-bottom: 12px;
+}
+
+.avatar {
+    object-fit: cover;
+}
+
+.username {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+
+.bio {
+    text-align: center;
+    color: var(--text-secondary, #666);
+    font-size: 0.95rem;
+    margin-bottom: 12px;
+    max-width: 85%;
+    line-height: 1.4;
+}
+
+.statsRow {
+    display: flex;
+    gap: 16px;
+    font-size: 0.85rem;
+    color: var(--text-secondary, #666);
+}
+
+.statItem {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Post List */
+.postsList {
+    background: var(--background);
+    min-height: 300px;
+}
+
+.postWrapper {
+    margin-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+}
+
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    color: var(--primary);
+}
+
+.spinner {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.error,
+.emptyState {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+    color: var(--text-secondary);
+    font-style: italic;
+}
+
+/* Desktop override (Optional: Center modal instead of bottom sheet) */
+@media (min-width: 768px) {
+    .overlay {
+        align-items: center;
+    }
+
+    .modal {
+        height: 85vh;
+        border-radius: 16px;
+        /* Full radius on desktop */
+    }
+}

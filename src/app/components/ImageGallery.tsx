@@ -4,14 +4,19 @@ import styles from './ImageGallery.module.css';
 import { X, ChevronLeft, ChevronRight } from 'lucide-react';
 import toast from 'react-hot-toast';
 
+import { useModalBehavior } from "@/hooks/useModalBehavior";
+
 interface ImageGalleryProps {
     isOpen: boolean;
-    images: string[];
+    images: { image_url: string }[];
     initialIndex: number;
     onClose: () => void;
 }
 
-const ImageGallery = ({ isOpen, images, initialIndex = 0, onClose }: ImageGalleryProps) => {
+const ImageGallery = ({ isOpen, images, initialIndex, onClose }: ImageGalleryProps) => {
+    // Apply Modal UX Behavior
+    useModalBehavior(isOpen, onClose);
+
     const [currentIndex, setCurrentIndex] = useState(initialIndex);
     const touchStart = useRef<{ x: number, y: number } | null>(null);
 
@@ -127,7 +132,7 @@ const ImageGallery = ({ isOpen, images, initialIndex = 0, onClose }: ImageGaller
                 )}
 
                 <img
-                    src={images[currentIndex]}
+                    src={images[currentIndex].image_url}
                     className={styles.image}
                     alt={`Gallery item ${currentIndex + 1}`}
                 /* Prevent click propagation from image so it doesn't trigger 50/50 nav if you don't want it to, 

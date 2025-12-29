@@ -1,0 +1,173 @@
+.sidebar {
+    width: 360px;
+    height: 100vh;
+    position: sticky;
+    top: 0;
+    padding: 20px 16px;
+    overflow-y: auto;
+    background: var(--surface);
+    border-left: 1px solid var(--border);
+    flex-shrink: 0;
+}
+
+.section {
+    margin-bottom: 24px;
+}
+
+.sectionHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.seeAll {
+    color: var(--primary);
+    font-size: 0.95rem;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.seeAll:hover {
+    text-decoration: underline;
+}
+
+.requestsList,
+.friendsList {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.requestItem {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px;
+    border-radius: 8px;
+    background: var(--background);
+}
+
+.requestAvatar {
+    position: relative;
+    width: 60px;
+    height: 60px;
+    border-radius: 8px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.requestInfo {
+    flex: 1;
+}
+
+.requestName {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 4px;
+}
+
+.mutualFriends {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+}
+
+.requestActions {
+    display: flex;
+    gap: 8px;
+}
+
+.confirmBtn,
+.deleteBtn {
+    flex: 1;
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.confirmBtn {
+    background: var(--primary);
+    color: white;
+}
+
+.deleteBtn {
+    background: var(--background);
+    color: var(--text);
+}
+
+.friendItem {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.friendItem:hover {
+    background: var(--background);
+}
+
+.avatarWrapper {
+    position: relative;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.avatar {
+    object-fit: cover;
+}
+
+.onlineIndicator {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #22c55e;
+    border: 2px solid var(--surface);
+}
+
+.friendInfo {
+    flex: 1;
+}
+
+.friendName {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text);
+}
+
+.emptyState {
+    text-align: center;
+    padding: 20px;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.loading {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+}
+
+@media (max-width: 1200px) {
+    .sidebar {
+        display: none;
+    }
+}

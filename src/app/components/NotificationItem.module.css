@@ -1,0 +1,70 @@
+.item {
+    display: flex;
+    align-items: center;
+    padding: 16px;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    background: var(--background);
+    transition: background 0.2s;
+}
+
+.item:hover {
+    background: var(--surface);
+}
+
+.unread {
+    background: rgba(var(--primary-rgb), 0.05);
+    /* Assuming variable exists or we use fallback */
+    border-left: 3px solid var(--primary);
+}
+
+.avatarWrapper {
+    position: relative;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    margin-right: 16px;
+    overflow: hidden;
+}
+
+.avatar {
+    object-fit: cover;
+}
+
+.content {
+    flex: 1;
+}
+
+.message {
+    font-size: 0.95rem;
+    margin-bottom: 4px;
+    color: var(--text-primary);
+}
+
+.username {
+    font-weight: 700;
+}
+
+.preview {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+    font-style: italic;
+}
+
+.time {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
+.icon {
+    margin-left: 12px;
+}
+
+.unreadDot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--primary);
+    margin-left: 12px;
+}

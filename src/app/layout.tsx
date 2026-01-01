@@ -21,6 +21,8 @@ import { Toaster } from 'react-hot-toast';
 // };
 
 
+import { ThemeProvider } from '@/context/ThemeContext';
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -30,8 +32,10 @@ export default function RootLayout({
     <html lang="en">
       {/*       <body className={`${geistSans.variable} ${geistMono.variable}`}> */}
       <body>
-        {children}
-        <Toaster position="bottom-center" />
+        <ThemeProvider>
+          {children}
+          <Toaster position="bottom-center" />
+        </ThemeProvider>
       </body>
     </html>
   );

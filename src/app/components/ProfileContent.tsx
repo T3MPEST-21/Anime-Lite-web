@@ -21,7 +21,14 @@ const ProfileContent = ({ userId: propUserId, title, showBackButton = true }: Pr
 
     // State
     const [userId, setUserId] = useState<string | null>(propUserId || null);
-    const [profile, setProfile] = useState<any>(null);
+    const [profile, setProfile] = useState<{
+        id: string;
+        username: string;
+        image: string | null;
+        full_name?: string;
+        bio?: string;
+        created_at?: string;
+    } | null>(null);
     const [posts, setPosts] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
 
@@ -92,12 +99,12 @@ const ProfileContent = ({ userId: propUserId, title, showBackButton = true }: Pr
                 </div>
 
                 <h1 className={styles.username}>{profile.username}</h1>
-                {profile.bio && <p className={styles.bio}>{profile.bio}</p>}
+                {profile?.bio && <p className={styles.bio}>{profile.bio}</p>}
 
                 <div className={styles.statsRow}>
                     <div className={styles.statItem}>
                         <Calendar size={16} />
-                        <span>Joined {format(new Date(profile.created_at), 'MMMM yyyy')}</span>
+                        <span>Joined {profile?.created_at ? format(new Date(profile.created_at), 'MMMM yyyy') : 'Recently'}</span>
                     </div>
                 </div>
             </div>

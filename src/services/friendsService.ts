@@ -90,7 +90,7 @@ export const getFriends = async (userId: string) => {
             .or(`user_id_a.eq.${userId},user_id_b.eq.${userId}`);
         if (error) throw error;
         // Map to friend user IDs
-        const friendIds = data.map((row: any) => row.user_id_a === userId ? row.user_id_b : row.user_id_a);
+        const friendIds = data.map((row: { user_id_a: string; user_id_b: string }) => row.user_id_a === userId ? row.user_id_b : row.user_id_a);
         return { data: friendIds };
     } catch (error) {
         return { error };

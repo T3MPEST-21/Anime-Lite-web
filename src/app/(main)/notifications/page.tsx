@@ -10,10 +10,6 @@ const NotificationsPage = () => {
     const [notifications, setNotifications] = useState<Notification[]>([]);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        loadNotifications();
-    }, []);
-
     const loadNotifications = async () => {
         setLoading(true);
         const { data: { user } } = await supabase.auth.getUser();
@@ -25,6 +21,13 @@ const NotificationsPage = () => {
         }
         setLoading(false);
     };
+
+    useEffect(() => {
+        const loadData = async () => {
+            await loadNotifications();
+        };
+        loadData();
+    }, []);
 
     const handleNotificationClick = async (id: string) => {
         // Mark locally

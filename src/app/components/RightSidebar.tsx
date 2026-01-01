@@ -27,10 +27,6 @@ const RightSidebar = () => {
     const [friendRequests, setFriendRequests] = useState<FriendRequest[]>([]);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        loadData();
-    }, []);
-
     const loadData = async () => {
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) return;
@@ -39,7 +35,7 @@ const RightSidebar = () => {
         const { data: requests } = await getIncomingFriendRequests(user.id);
         if (requests && requests.length > 0) {
             const requestsWithData = await Promise.all(
-                requests.map(async (req: any) => {
+                requests.map(async (req: { id: string; requester_id: string }) => {
                     const userData = await getUserData(req.requester_id);
                     return {
                         id: req.id,
@@ -66,6 +62,13 @@ const RightSidebar = () => {
 
         setLoading(false);
     };
+
+    useEffect(() => {
+        const loadInitialData = async () => {
+            await loadData();
+        };
+        loadInitialData();
+    }, []);
 
     const handleAccept = async (requestId: string) => {
         await acceptFriendRequest(requestId);

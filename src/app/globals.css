@@ -1,51 +1,53 @@
   :root {
-  /* Light Theme (matches lightTheme in themeContext.tsx) */
-  --background: #f1f0ee;
-  --surface: #ffffff;
-  --text: #1d1d1d;
-  --text-secondary: #475b6f;
+    /* Light Theme (matches lightTheme in themeContext.tsx) */
+    --background: #f1f0ee;
+    --surface: #ffffff;
+    --text: #1d1d1d;
+    --text-secondary: #475b6f;
+    --border: #e1e1e1;
+    /* Added border variable */
 
-  --primary: #ff7f50;
-  --secondary: #e74c3c;
-  --accent: #e9967a;
+    --primary: #ff7f50;
+    --secondary: #e74c3c;
+    --accent: #e9967a;
 
-  /* Radiuses (matches radius in theme.ts) */
-  --radius-sm: 12px;
-  --radius-md: 14px;
-  --radius-lg: 16px;
-  --radius-xl: 18px;
-  --radius-xxl: 20px;
-  --radius-round: 24px;
-}
+    /* Radiuses (matches radius in theme.ts) */
+    --radius-sm: 12px;
+    --radius-md: 14px;
+    --radius-lg: 16px;
+    --radius-xl: 18px;
+    --radius-xxl: 20px;
+    --radius-round: 24px;
+  }
 
-@media (prefers-color-scheme: dark) {
-  :root {
+  [data-theme='dark'] {
     /* Dark Theme (matches darkTheme in themeContext.tsx) */
     --background: #0a0a0a;
     --surface: #090808;
     --text: #ffffff;
     --text-secondary: #e3e3e3;
+    --border: #2a2a2a;
+    /* Added border variable */
 
     /* Primary usually stays same, but surface changes */
     --primary: #ff7f50;
   }
-}
 
-body {
-  color: var(--text);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-  margin: 0;
-  padding: 0;
-}
+  body {
+    color: var(--text);
+    background: var(--background);
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 0;
+    padding: 0;
+  }
 
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
 
-a {
-  color: inherit;
-  text-decoration: none;
-}
+  a {
+    color: inherit;
+    text-decoration: none;
+  }

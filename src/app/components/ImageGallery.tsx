@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useLayoutEffect, useState, useRef } from 'react';
 import styles from './ImageGallery.module.css';
 import { X, ChevronLeft, ChevronRight } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -21,9 +21,10 @@ const ImageGallery = ({ isOpen, images, initialIndex, onClose }: ImageGalleryPro
     const touchStart = useRef<{ x: number, y: number } | null>(null);
 
     // Reset index when opening and show toast
-    useEffect(() => {
+    useLayoutEffect(() => {
         if (isOpen) {
-            setCurrentIndex(initialIndex);
+            // eslint-disable-next-line react-hooks/set-state-in-effect
+            setCurrentIndex(() => initialIndex);
             toast('Tap Left/Right to navigate. Swipe Up/Down to close.', {
                 icon: '👆',
                 duration: 4000,
@@ -37,6 +38,18 @@ const ImageGallery = ({ isOpen, images, initialIndex, onClose }: ImageGalleryPro
     }, [isOpen, initialIndex]);
 
     // Handle keyboard navigation
+    const showNext = () => {
+        if (currentIndex < images.length - 1) {
+            setCurrentIndex(currentIndex + 1);
+        }
+    };
+
+    const showPrev = () => {
+        if (currentIndex > 0) {
+            setCurrentIndex(currentIndex - 1);
+        }
+    };
+
     useEffect(() => {
         if (!isOpen) return;
 
@@ -51,18 +64,6 @@ const ImageGallery = ({ isOpen, images, initialIndex, onClose }: ImageGalleryPro
     }, [isOpen, currentIndex]); // eslint-disable-line
 
     if (!isOpen || !images) return null;
-
-    const showNext = () => {
-        if (currentIndex < images.length - 1) {
-            setCurrentIndex(currentIndex + 1);
-        }
-    };
-
-    const showPrev = () => {
-        if (currentIndex > 0) {
-            setCurrentIndex(currentIndex - 1);
-        }
-    };
 
     // 50/50 Touch/Click Logic
     const handleOverlayClick = (e: React.MouseEvent) => {

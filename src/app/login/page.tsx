@@ -76,7 +76,7 @@ const LoginPage = () => {
                     {loading ? "Logging in..." : "Login"}
                 </button>
                 <p className={styles.linkText}>
-                    Don't have an account? <Link href="/signup" className={styles.link}>Register</Link>
+                    Don&apos;t have an account? <Link href="/signup" className={styles.link}>Register</Link>
                 </p>
             </form>
         </div>

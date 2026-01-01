@@ -2,8 +2,6 @@
 
 import React, { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
-import { fetchPosts } from "@/services/postsService";
-import PostCard from "./components/Postcard";
 import styles from "./page.module.css";
 import Link from "next/link";
 import { useRouter } from "next/navigation";

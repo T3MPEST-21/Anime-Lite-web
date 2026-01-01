@@ -37,7 +37,7 @@ const NotificationItem = ({ notification, onClick }: NotificationItemProps) => {
                 </div>
 
                 {notification.content && !isLike && (
-                    <div className={styles.preview}>"{notification.content}"</div>
+                    <div className={styles.preview}>&ldquo;{notification.content}&rdquo;</div>
                 )}
 
                 <div className={styles.time}>{timeAgo}</div>

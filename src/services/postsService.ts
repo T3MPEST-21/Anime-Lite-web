@@ -282,8 +282,8 @@ export const createPost = async (userId: string, body: string, imageFiles: File[
         }
 
         return { success: true, data: postData };
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error('exception creating post:', error)
-        return { success: false, msg: error.message };
+        return { success: false, msg: error instanceof Error ? error.message : 'Unknown error' };
     }
 }

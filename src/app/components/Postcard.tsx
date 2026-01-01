@@ -236,7 +236,7 @@ const PostCard = ({ post }: PostProps) => {
       <ProfileModal
         isOpen={isProfileOpen}
         onClose={() => setIsProfileOpen(false)}
-        userId={post.user_id || (post as any).user_id} // Fallback if type isn't perfect yet
+        userId={post.user_id}
       />
     </div>
   );

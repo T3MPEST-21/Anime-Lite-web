@@ -42,15 +42,15 @@ export const fetchNotifications = async (userId: string) => {
         }
 
         // Transform data to match interface if needed (single object vs array from join)
-        const formattedData = (data || []).map((notification: any) => ({
-            ...notification,
-            actor_profiles: notification.actor_profiles || null, // Supabase join usually returns object for single relation if configured, or array. Mobile app handled array check.
-            // Let's assume standard 1:1 join returns object or we handle it.
-            // checking mobile: actor_profiles: notification.actor_profiles?.[0] || null
-            // We should check how it comes back. Usually !inner implies object?
-            // Let's safeguard like mobile app just in case, but usually simple join is an object if foreign key is unique, or array.
-            // Safe bet involves checking if it's an array.
-        }));
+        // const formattedData = (data || []).map((notification: any) => ({
+        //     ...notification,
+        //     actor_profiles: notification.actor_profiles || null, // Supabase join usually returns object for single relation if configured, or array. Mobile app handled array check.
+        //     // Let's assume standard 1:1 join returns object or we handle it.
+        //     // checking mobile: actor_profiles: notification.actor_profiles?.[0] || null
+        //     // We should check how it comes back. Usually !inner implies object?
+        //     // Let's safeguard like mobile app just in case, but usually simple join is an object if foreign key is unique, or array.
+        //     // Safe bet involves checking if it's an array.
+        // }));
 
         // Actually, let's keep it simple and refine if type mismatch occurs.
         // Mobile app did: actor_profiles: notification.actor_profiles?.[0] || null
@@ -83,7 +83,8 @@ export const markAsRead = async (notificationId: string) => {
             return { success: false, msg: error.message };
         }
         return { success: true };
-    } catch (error) {
+    } catch (catchError) {
+        console.error('Exception marking notification as read:', catchError);
         return { success: false, msg: "Exception marking read" };
     }
 };

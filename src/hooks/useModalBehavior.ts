@@ -22,7 +22,7 @@ export const useModalBehavior = (isOpen: boolean, onClose: () => void) => {
             pushedStateRef.current = true;
         }
 
-        const handlePopState = (event: PopStateEvent) => {
+        const handlePopState = () => {
             // Back button was pressed
             // We are no longer in the pushed state
             pushedStateRef.current = false;

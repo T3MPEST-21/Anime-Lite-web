@@ -21,27 +21,39 @@ const ProfileModal = ({ isOpen, userId, onClose }: ProfileModalProps) => {
     useModalBehavior(isOpen, onClose);
 
     // State
-    const [profile, setProfile] = useState<any>(null);
+    const [profile, setProfile] = useState<{
+        id: string;
+        username: string;
+        image: string | null;
+        full_name?: string;
+        bio?: string;
+        created_at?: string;
+    } | null>(null);
     const [posts, setPosts] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
-    const [currentUser, setCurrentUser] = useState<any>(null);
+    const [currentUser, setCurrentUser] = useState<string | null>(null);
 
+    // Reset state when modal closes
+    /* eslint-disable react-hooks/set-state-in-effect */
     useEffect(() => {
-        if (!isOpen || !userId) {
-            // Reset when closed
-            if (!isOpen) {
-                setProfile(null);
-                setPosts([]);
-            }
-            return;
+        if (!isOpen) {
+            setProfile(null);
+            setPosts([]);
+            setLoading(true);
         }
+    }, [isOpen]);
+    /* eslint-enable react-hooks/set-state-in-effect */
+
+    // Load data when modal opens
+    useEffect(() => {
+        if (!isOpen || !userId) return;
 
         const loadData = async () => {
             setLoading(true);
 
             // Get current user for context (likes etc)
             const { data: { user } } = await supabase.auth.getUser();
-            setCurrentUser(user);
+            setCurrentUser(user ? user.id : null);
 
             // Fetch Profile
             const { success: pSuccess, data: pData } = await getUserData(userId);
@@ -90,7 +102,7 @@ const ProfileModal = ({ isOpen, userId, onClose }: ProfileModalProps) => {
                             <div className={styles.statsRow}>
                                 <div className={styles.statItem}>
                                     <Calendar size={16} />
-                                    <span>Joined {format(new Date(profile.created_at), 'MMM yyyy')}</span>
+                                    <span>Joined {profile.created_at ? format(new Date(profile.created_at), 'MMM yyyy') : 'Recently'}</span>
                                 </div>
                             </div>
                         </div>

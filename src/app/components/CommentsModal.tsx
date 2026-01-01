@@ -30,6 +30,12 @@ interface Comment {
     } | null;
 }
 
+type CurrentUser = {
+    id: string;
+    email?: string;
+    image?: string | null;
+};
+
 import { useModalBehavior } from "@/hooks/useModalBehavior";
 
 const CommentsModal = ({ isOpen, onClose, post }: CommentsModalProps) => {
@@ -39,9 +45,15 @@ const CommentsModal = ({ isOpen, onClose, post }: CommentsModalProps) => {
     const [comments, setComments] = useState<Comment[]>([]);
     const [newComment, setNewComment] = useState("");
     const [loading, setLoading] = useState(false);
-    const [currentUser, setCurrentUser] = useState<any>(null);
+    const [currentUser, setCurrentUser] = useState<CurrentUser | null>(null);
     const [sortOrder, setSortOrder] = useState<'newest' | 'oldest'>('newest');
     const commentsEndRef = useRef<HTMLDivElement>(null);
+
+    const scrollToBottom = () => {
+        setTimeout(() => {
+            commentsEndRef.current?.scrollIntoView({ behavior: "smooth" });
+        }, 100);
+    };
 
     // Fetch user on mount
     useEffect(() => {
@@ -125,12 +137,6 @@ const CommentsModal = ({ isOpen, onClose, post }: CommentsModalProps) => {
         };
     }, [isOpen, post, currentUser, sortOrder]);
 
-    const scrollToBottom = () => {
-        setTimeout(() => {
-            commentsEndRef.current?.scrollIntoView({ behavior: "smooth" });
-        }, 100);
-    };
-
     const handleSend = async () => {
         if (!newComment.trim() || !post || !currentUser) return;
 
@@ -145,7 +151,7 @@ const CommentsModal = ({ isOpen, onClose, post }: CommentsModalProps) => {
             user_id: currentUser.id,
             profiles: {
                 username: currentUser.email?.split('@')[0] || 'You',
-                image: currentUser.image
+                image: currentUser.image ?? null
             }
         };
 

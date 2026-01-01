@@ -4,13 +4,20 @@ import { supabase } from '@/lib/supabase';
 import { searchUsers } from '@/services/userService';
 import styles from './search.module.css';
 import Image from 'next/image';
-import { Loader2, Search as SearchIcon } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import ProfileModal from '@/app/components/ProfileModal';
-// import { useAuth } from '@/context/authContext'; 
+// import { useAuth } from '@/context/authContext';
+
+type User = {
+  id: string;
+  username: string;
+  image: string | null;
+  full_name?: string;
+};
 
 const SearchPage = () => {
     const [query, setQuery] = useState('');
-    const [results, setResults] = useState<any[]>([]);
+    const [results, setResults] = useState<User[]>([]);
     const [loading, setLoading] = useState(false);
     const [currentUserId, setCurrentUserId] = useState<string | null>(null);
 
@@ -18,14 +25,17 @@ const SearchPage = () => {
     const [isProfileOpen, setIsProfileOpen] = useState(false);
     const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
 
-    useEffect(() => {
-        getCurrentUser();
-    }, []);
-
     const getCurrentUser = async () => {
         const { data: { user } } = await supabase.auth.getUser();
         if (user) setCurrentUserId(user.id);
     };
+
+    useEffect(() => {
+        const loadData = async () => {
+            await getCurrentUser();
+        };
+        loadData();
+    }, []);
 
     const handleSearch = async (val: string) => {
         setQuery(val);

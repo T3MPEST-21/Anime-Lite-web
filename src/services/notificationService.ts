@@ -6,6 +6,8 @@ export interface Notification {
     content?: string;
     read: boolean;
     created_at: string;
+    actor_id: string;
+    post_id: string | null;
     actor_profiles: {
         username: string;
         image: string;
@@ -25,6 +27,8 @@ export const fetchNotifications = async (userId: string) => {
           content,
           read,
           created_at,
+          actor_id,
+          post_id,
           actor_profiles:actor_id (
             username,
             image
@@ -41,22 +45,6 @@ export const fetchNotifications = async (userId: string) => {
             return { success: false, msg: error.message };
         }
 
-        // Transform data to match interface if needed (single object vs array from join)
-        // const formattedData = (data || []).map((notification: any) => ({
-        //     ...notification,
-        //     actor_profiles: notification.actor_profiles || null, // Supabase join usually returns object for single relation if configured, or array. Mobile app handled array check.
-        //     // Let's assume standard 1:1 join returns object or we handle it.
-        //     // checking mobile: actor_profiles: notification.actor_profiles?.[0] || null
-        //     // We should check how it comes back. Usually !inner implies object?
-        //     // Let's safeguard like mobile app just in case, but usually simple join is an object if foreign key is unique, or array.
-        //     // Safe bet involves checking if it's an array.
-        // }));
-
-        // Actually, let's keep it simple and refine if type mismatch occurs.
-        // Mobile app did: actor_profiles: notification.actor_profiles?.[0] || null
-        // We will return data as is and let the component handle it or map it here.
-        // Let's map it here to be safe and clean.
-
         const cleanData = (data || []).map((n: any) => ({
             ...n,
             actor_profiles: Array.isArray(n.actor_profiles) ? n.actor_profiles[0] : n.actor_profiles,
@@ -70,6 +58,25 @@ export const fetchNotifications = async (userId: string) => {
         return { success: false, msg: "Exception fetching notifications" };
     }
 };
+
+export const getUnreadNotificationCount = async (userId: string) => {
+    try {
+        const { count, error } = await supabase
+            .from('notifications')
+            .select('*', { count: 'exact', head: true }) // count only
+            .eq('user_id', userId)
+            .eq('read', false);
+
+        if (error) {
+            console.error('Error fetching unread count:', error);
+            return { success: false, count: 0 };
+        }
+        return { success: true, count: count || 0 };
+    } catch (error) {
+        console.error("Exception in getUnreadNotificationCount:", error);
+        return { success: false, count: 0 };
+    }
+}
 
 export const markAsRead = async (notificationId: string) => {
     try {

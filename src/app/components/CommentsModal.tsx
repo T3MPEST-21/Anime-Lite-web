@@ -163,7 +163,7 @@ const CommentsModal = ({ isOpen, onClose, post }: CommentsModalProps) => {
         if (sortOrder === 'oldest') scrollToBottom();
 
         // Send to server (realtime will update with real data)
-        const { success } = await addComment(post.id, currentUser.id, commentText);
+        const { success } = await addComment(post.id, commentText);
         if (!success) {
             alert("Failed to send comment");
             setComments((prev) => prev.filter(c => c.id !== 'temp'));

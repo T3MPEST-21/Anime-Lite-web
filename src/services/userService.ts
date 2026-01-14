@@ -4,7 +4,7 @@ export const getUserData = async (userId: string) => {
     try {
         const { data, error } = await supabase
             .from("profiles")
-            .select("*")
+            .select("id, username, full_name, bio, image, created_at")
             .eq("id", userId)
             .single();
 
@@ -26,7 +26,7 @@ export const searchUsers = async (query: string, currentUserId?: string) => {
 
         let dbQuery = supabase
             .from("profiles")
-            .select("*")
+            .select("id, username, image")
             .ilike("username", `%${query}%`)
             .limit(20);
 
@@ -45,5 +45,43 @@ export const searchUsers = async (query: string, currentUserId?: string) => {
     } catch (error) {
         console.error("Exception in searchUsers:", error);
         return { success: false, msg: "Exception searching users" };
+    }
+};
+
+import { profileUpdateSchema, ProfileUpdateInput } from "@/lib/validations";
+
+export const updateUserProfile = async (updates: ProfileUpdateInput) => {
+    try {
+        // Validate inputs
+        const validated = profileUpdateSchema.safeParse(updates);
+        if (!validated.success) {
+            return {
+                success: false,
+                msg: validated.error.issues[0].message
+            };
+        }
+
+        const { data: { user } } = await supabase.auth.getUser();
+
+        if (!user) {
+            return { success: false, msg: "Session not found. Please log in again." };
+        }
+
+        const { data, error } = await supabase
+            .from("profiles")
+            .update(updates)
+            .eq("id", user.id)
+            .select()
+            .single();
+
+        if (error) {
+            console.error("Error updating profile:", error);
+            return { success: false, msg: error.message };
+        }
+
+        return { success: true, data };
+    } catch (error) {
+        console.error("Exception in updateUserProfile:", error);
+        return { success: false, msg: "Exception updating profile" };
     }
 };

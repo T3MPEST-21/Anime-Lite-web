@@ -22,6 +22,8 @@ import { Toaster } from 'react-hot-toast';
 
 
 import { ThemeProvider } from '@/context/ThemeContext';
+import { AuthProvider } from '@/context/AuthContext';
+import { SWRProvider } from '@/components/SWRProvider';
 
 export default function RootLayout({
   children,
@@ -32,10 +34,14 @@ export default function RootLayout({
     <html lang="en">
       {/*       <body className={`${geistSans.variable} ${geistMono.variable}`}> */}
       <body>
-        <ThemeProvider>
-          {children}
-          <Toaster position="bottom-center" />
-        </ThemeProvider>
+        <AuthProvider>
+          <ThemeProvider>
+            <SWRProvider>
+              {children}
+              <Toaster position="bottom-center" />
+            </SWRProvider>
+          </ThemeProvider>
+        </AuthProvider>
       </body>
     </html>
   );

@@ -150,7 +150,20 @@ const RightSidebar = () => {
                             <div
                                 key={friend.id}
                                 className={styles.friendItem}
-                                onClick={() => router.push(`/user/${friend.id}`)}
+                                onClick={async () => {
+                                    // Optimistic/Lazy navigation: Go to chat immediately?
+                                    // Better: Call service then navigate.
+                                    // Just adding a simple loader might be nice, but for now direct call.
+                                    try {
+                                        const { createOrGetConversation } = await import('@/services/chatService');
+                                        const { success, data } = await createOrGetConversation(friend.id);
+                                        if (success && data) {
+                                            router.push(`/chat/${data}?name=${encodeURIComponent(friend.username)}`);
+                                        }
+                                    } catch (e) {
+                                        console.error("Failed to start chat", e);
+                                    }
+                                }}
                             >
                                 <div className={styles.avatarWrapper}>
                                     <Image
@@ -170,7 +183,7 @@ const RightSidebar = () => {
                     </div>
                 )}
             </div>
-        </aside>
+        </aside >
     );
 };
 

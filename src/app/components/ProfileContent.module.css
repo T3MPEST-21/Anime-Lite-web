@@ -26,6 +26,23 @@
     backdrop-filter: blur(10px);
     z-index: 10;
     border-bottom: 1px solid var(--border);
+    justify-content: space-between;
+}
+
+.settingsBtn {
+    background: none;
+    border: none;
+    color: inherit;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.settingsBtn:hover {
+    background: rgba(255, 255, 255, 0.1);
 }
 
 .backBtn {
@@ -111,4 +128,20 @@
     align-items: center;
     height: 50vh;
     color: var(--text-secondary);
+}
+
+.editBtn {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 6px 14px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+
+.editBtn:hover {
+    background-color: var(--hover);
 }

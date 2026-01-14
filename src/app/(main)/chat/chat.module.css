@@ -1,34 +1,128 @@
 .container {
-    max-width: 100%;
-    min-height: 100vh;
-    padding: 20px;
+    padding: 24px;
+    max-width: 800px;
+    margin: 0 auto;
+    width: 100%;
 }
 
 .header {
-    margin-bottom: 30px;
+    margin-bottom: 24px;
 }
 
 .header h1 {
-    font-size: 2rem;
+    font-size: 24px;
     font-weight: 700;
+    color: var(--text);
     margin-bottom: 8px;
 }
 
 .header p {
     color: var(--text-secondary);
+    font-size: 14px;
 }
 
-.comingSoon {
-    text-align: center;
-    padding: 100px 20px;
+.chatList {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 }
 
-.comingSoon h2 {
-    font-size: 1.5rem;
-    margin-bottom: 16px;
+.conversationItem {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    border-radius: 12px;
+    background-color: var(--surface);
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+    text-decoration: none;
 }
 
-.comingSoon p {
+.conversationItem:hover {
+    background-color: var(--border);
+}
+
+.conversationItem:active {
+    transform: scale(0.99);
+}
+
+.avatarWrapper {
+    position: relative;
+    width: 48px;
+    height: 48px;
+    margin-right: 16px;
+    border-radius: 50%;
+    overflow: hidden;
+    background-color: #eee;
+    flex-shrink: 0;
+}
+
+.avatar {
+    object-fit: cover;
+}
+
+.content {
+    flex: 1;
+    min-width: 0;
+    /* Important for text truncation */
+}
+
+.topRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
+}
+
+.username {
+    font-weight: 600;
+    font-size: 16px;
+    color: var(--text);
+}
+
+.time {
+    font-size: 12px;
     color: var(--text-secondary);
-    margin: 8px 0;
+    white-space: nowrap;
+    margin-left: 8px;
+}
+
+.lastMessage {
+    color: var(--text-secondary);
+    font-size: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.4;
+}
+
+.loading,
+.empty {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 200px;
+    color: var(--text-secondary);
+    font-size: 16px;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.emptyIcon {
+    opacity: 0.5;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .container {
+        padding: 16px;
+        padding-bottom: 80px;
+        /* Space for MobileNavBar */
+    }
+
+    .conversationItem {
+        padding: 16px;
+        /* Larger tap targets */
+    }
 }

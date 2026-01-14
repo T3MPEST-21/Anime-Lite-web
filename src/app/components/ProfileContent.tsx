@@ -6,9 +6,11 @@ import { getUserData } from "@/services/userService";
 import { fetchPostsByUser } from "@/services/postsService";
 import styles from "./ProfileContent.module.css";
 import Image from "next/image";
-import { ArrowLeft, Calendar } from "lucide-react";
+import { ArrowLeft, Calendar, Settings } from "lucide-react";
 import PostCard from "@/app/components/Postcard";
 import { format } from "date-fns";
+import EditProfileModal from "./EditProfileModal";
+import InfiniteScrollTrigger from "./InfiniteScrollTrigger";
 
 interface ProfileContentProps {
     userId?: string; // If not provided, fetch current user
@@ -32,19 +34,31 @@ const ProfileContent = ({ userId: propUserId, title, showBackButton = true }: Pr
     const [posts, setPosts] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
 
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
+    // Pagination State
+    const [page, setPage] = useState(0);
+    const [hasMore, setHasMore] = useState(true);
+    const [loadingMore, setLoadingMore] = useState(false);
+
     useEffect(() => {
-        const loadData = async () => {
-            setLoading(true);
+        loadData(0, true);
+    }, [propUserId]);
+
+    const loadData = async (pageIndex: number, isRefresh = false) => {
+        if (isRefresh) setLoading(true);
+        else setLoadingMore(true);
+
+        try {
             let targetUserId = propUserId;
 
-            // If no propUserId, get current user
+            // If no propUserId, get current user (Logic moved here to ensure we have ID)
             if (!targetUserId) {
                 const { data: { user } } = await supabase.auth.getUser();
                 if (user) {
                     targetUserId = user.id;
-                    setUserId(user.id);
+                    if (isRefresh) setUserId(user.id);
                 } else {
-                    // Not logged in and no prop? Redirect or show error
                     setLoading(false);
                     return;
                 }
@@ -52,19 +66,44 @@ const ProfileContent = ({ userId: propUserId, title, showBackButton = true }: Pr
 
             if (!targetUserId) return;
 
-            // Fetch Profile
-            const { success: pSuccess, data: pData } = await getUserData(targetUserId);
-            if (pSuccess) setProfile(pData);
+            // Fetch Profile (only on refresh/first load)
+            if (isRefresh) {
+                const { success: pSuccess, data: pData } = await getUserData(targetUserId);
+                if (pSuccess) setProfile(pData);
+            }
 
-            // Fetch Posts
-            const { success: postsSuccess, data: postsData } = await fetchPostsByUser(targetUserId, targetUserId); // passing same ID for likely "liked" check context
-            if (postsSuccess) setPosts(postsData || []);
+            // Fetch Posts with Pagination
+            const { success: postsSuccess, data: postsData } = await fetchPostsByUser(targetUserId, targetUserId, pageIndex, 10);
 
+            if (postsSuccess && postsData) {
+                if (postsData.length < 10) setHasMore(false);
+                else setHasMore(true);
+
+                if (isRefresh) {
+                    setPosts(postsData);
+                } else {
+                    setPosts(prev => [...prev, ...postsData]);
+                }
+                setPage(pageIndex);
+            }
+        } catch (e) {
+            console.error(e);
+        } finally {
             setLoading(false);
-        };
+            setLoadingMore(false);
+        }
+    };
 
-        loadData();
-    }, [propUserId]);
+    const handleLoadMore = () => {
+        loadData(page + 1, false);
+    };
+
+    const refreshProfile = async () => {
+        // Just re-fetch profile data, not posts
+        if (!userId) return;
+        const { success: pSuccess, data: pData } = await getUserData(userId);
+        if (pSuccess) setProfile(pData);
+    };
 
     if (loading) {
         return <div className={styles.loading}>Loading...</div>;
@@ -74,16 +113,31 @@ const ProfileContent = ({ userId: propUserId, title, showBackButton = true }: Pr
         return <div className={styles.error}>User not found</div>;
     }
 
+    // Determine if it's the current user's profile to show edit button
+    const isOwner = userId && (!propUserId || userId === propUserId);
+
     return (
         <div className={styles.container}>
             {/* Header / Nav */}
             <div className={styles.navBar}>
-                {showBackButton && (
-                    <button onClick={() => router.back()} className={styles.backBtn}>
-                        <ArrowLeft size={24} />
+                <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                    {showBackButton && (
+                        <button onClick={() => router.back()} className={styles.backBtn}>
+                            <ArrowLeft size={24} />
+                        </button>
+                    )}
+                    <span className={styles.navTitle}>{title || profile.username}</span>
+                </div>
+
+                {isOwner && (
+                    <button
+                        onClick={() => router.push('/settings')}
+                        className={styles.settingsBtn}
+                        aria-label="Settings"
+                    >
+                        <Settings size={24} />
                     </button>
                 )}
-                <span className={styles.navTitle}>{title || profile.username}</span>
             </div>
 
             {/* Profile Info */}
@@ -98,7 +152,18 @@ const ProfileContent = ({ userId: propUserId, title, showBackButton = true }: Pr
                     />
                 </div>
 
-                <h1 className={styles.username}>{profile.username}</h1>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <h1 className={styles.username}>{profile.username}</h1>
+                    {(userId && !propUserId) ? (
+                        <button
+                            className={styles.editBtn}
+                            onClick={() => setIsEditModalOpen(true)}
+                        >
+                            Edit Profile
+                        </button>
+                    ) : null}
+                </div>
+
                 {profile?.bio && <p className={styles.bio}>{profile.bio}</p>}
 
                 <div className={styles.statsRow}>
@@ -114,13 +179,29 @@ const ProfileContent = ({ userId: propUserId, title, showBackButton = true }: Pr
                 {posts.length === 0 ? (
                     <div className={styles.emptyState}>No posts yet</div>
                 ) : (
-                    posts.map(post => (
-                        <div key={post.id} className={styles.postWrapper}>
-                            <PostCard post={post} />
-                        </div>
-                    ))
+                    <>
+                        {posts.map(post => (
+                            <div key={`${post.id}-${page}`} className={styles.postWrapper}>
+                                <PostCard post={post} />
+                            </div>
+                        ))}
+                        <InfiniteScrollTrigger
+                            onIntersect={handleLoadMore}
+                            isLoading={loadingMore}
+                            hasMore={hasMore}
+                            rootMargin="200px"
+                        />
+                    </>
                 )}
             </div>
+
+            {/* Edit Modal */}
+            <EditProfileModal
+                isOpen={isEditModalOpen}
+                onClose={() => setIsEditModalOpen(false)}
+                currentProfile={profile}
+                onProfileUpdate={refreshProfile}
+            />
         </div>
     );
 };

@@ -1,0 +1,147 @@
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.header h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.backButton {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text);
+    padding: 8px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.backButton:hover {
+    background-color: var(--surface-hover);
+}
+
+.tabs {
+    display: flex;
+    background-color: var(--surface);
+    padding: 4px;
+    border-radius: 12px;
+    margin-bottom: 24px;
+    border: 1px solid var(--border);
+}
+
+.tab {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    border-radius: 8px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    transition: all 0.2s;
+}
+
+.activeTab {
+    background-color: var(--primary);
+    color: white;
+}
+
+.statusMessage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    color: var(--text-secondary);
+    gap: 12px;
+}
+
+.requestList {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.requestItem {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    background-color: var(--surface);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    gap: 12px;
+}
+
+.avatarWrapper {
+    position: relative;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.avatar {
+    object-fit: cover;
+}
+
+.userInfo {
+    flex: 1;
+}
+
+.username {
+    font-weight: 600;
+    font-size: 1rem;
+    display: block;
+}
+
+.actions {
+    display: flex;
+    gap: 8px;
+}
+
+.acceptButton, .rejectButton, .pendingBadge {
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.acceptButton {
+    background-color: #22c55e;
+    color: white;
+}
+
+.rejectButton {
+    background-color: #ef4444;
+    color: white;
+}
+
+.pendingBadge {
+    background-color: var(--surface-hover);
+    color: var(--text-secondary);
+    cursor: default;
+}
+
+.loading {
+    display: flex;
+    justify-content: center;
+    padding: 40px;
+}
